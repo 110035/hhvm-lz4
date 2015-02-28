@@ -1,0 +1,5 @@
+Scanning dependencies of target lz4
+[100%] Building CXX object CMakeFiles/lz4.dir/src/lz4.cpp.o
+Linking CXX shared library lz4.so
+Embedding php in lz4
+[100%] Built target lz4
