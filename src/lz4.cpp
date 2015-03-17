@@ -54,7 +54,7 @@ namespace HPHP {
             output_len = LZ4_compress(data.c_str(), output + offset, data_len);
         }
         if (output_len <= 0) {
-            raise_error("lz4_compress : compress error");
+            raise_error("lz4_compress : compress error ,%s is not compressable",data.c_str());
         }
         CopyStringMode mode = CopyString;
         String compress = String(output, output_len + offset, mode);
@@ -88,7 +88,7 @@ namespace HPHP {
                 data.length() - offset,
                 data_size);
         if (output_len <= 0) {
-            raise_error("lz4_uncompress : data error");
+            raise_error("lz4_uncompress : data error, %s is not uncompressable",data.c_str());
         }
         CopyStringMode mode = CopyString;
         String uncompress = String(output, output_len, mode);
