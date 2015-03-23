@@ -6,7 +6,7 @@
  * @license http://gnu.org 
  */
 <<__Native>>
-function lz4_compress(string $data, bool $high=false, string $extra = NULL): string;
+function lz4_compress(string $data, bool $high=false, string $extra = NULL): mixed;
 <<__Native>>
-function lz4_uncompress(string $data, int $maxsize = -1, int $offset = -1): string;
+function lz4_uncompress(string $data, int $maxsize = -1, int $offset = -1): mixed;
 

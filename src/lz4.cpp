@@ -22,7 +22,7 @@
 
 namespace HPHP {
 
-    static String HHVM_FUNCTION(lz4_compress, const String& data, bool high, const String& extra) {
+    static Variant HHVM_FUNCTION(lz4_compress, const String& data, bool high, const String& extra) {
 
         char *output = NULL;
         int output_len, data_len;
@@ -40,6 +40,7 @@ namespace HPHP {
 
         if (!output) {
             raise_error("lz4_compress : memory error");
+            return false;
         }
         if (extra && extra_len > 0) {
             memcpy(output, (const void *) extra.c_str(), offset);
@@ -54,15 +55,19 @@ namespace HPHP {
             output_len = LZ4_compress(data.c_str(), output + offset, data_len);
         }
         if (output_len <= 0) {
-            raise_error("lz4_compress : compress error ,%s is not compressable",data.c_str());
+            raise_warning("lz4_compress : compress error ,%s is not compressable",data.c_str());
+            free(output);
+            return false;
+        }else{
+            CopyStringMode mode = CopyString;
+            String compress = String(output, output_len + offset, mode);
+            free(output);
+            return compress;
         }
-        CopyStringMode mode = CopyString;
-        String compress = String(output, output_len + offset, mode);
-        free(output);
-        return compress;
+        
     }
 
-    static String HHVM_FUNCTION(lz4_uncompress, const String& data, long max_size, long offset) {
+    static Variant HHVM_FUNCTION(lz4_uncompress, const String& data, long max_size, long offset) {
 
         int output_len, data_size;
         char *output;
@@ -78,22 +83,28 @@ namespace HPHP {
         }
         if (data_size < 0) {
             raise_error("lz4_uncompress : allocate size error");
+            return false;
         }
         output = (char *) malloc(data_size + 1);
         if (!output) {
             raise_error("lz4_uncompress : memory error");
+            return false;
         }
         output_len = LZ4_decompress_safe(data.c_str() + offset,
                 output,
                 data.length() - offset,
                 data_size);
         if (output_len <= 0) {
-            raise_error("lz4_uncompress : data error, %s is not uncompressable",data.c_str());
+            raise_warning("lz4_uncompress : data error, %s is not uncompressable",data.c_str());
+            free(output);
+            return false;
+        }else{
+            CopyStringMode mode = CopyString;
+            String uncompress = String(output, output_len, mode);
+            free(output);
+            return uncompress;
         }
-        CopyStringMode mode = CopyString;
-        String uncompress = String(output, output_len, mode);
-        free(output);
-        return uncompress;
+        
 
     }
 
