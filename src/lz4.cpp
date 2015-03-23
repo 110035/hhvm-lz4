@@ -95,7 +95,7 @@ namespace HPHP {
                 data.length() - offset,
                 data_size);
         if (output_len <= 0) {
-            raise_warning("lz4_uncompress : data error, %s is not uncompressable",data.c_str());
+            raise_warning("lz4_uncompress : data error, %s is uncompressable",data.c_str());
             free(output);
             return false;
         }else{
